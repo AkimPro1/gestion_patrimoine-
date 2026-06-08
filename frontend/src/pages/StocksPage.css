@@ -132,6 +132,85 @@
   font-weight: 850;
 }
 
+/* --- LOGO LOADING SCREEN / SPLASH --- */
+.patris-splash-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0b1726; /* Fond bleu nuit profond */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.splash-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.splash-logo-glow {
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(5, 150, 222, 0.2) 0%, transparent 75%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(5, 150, 222, 0)); }
+  50% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(5, 150, 222, 0.4)); }
+}
+
+.splash-title {
+  font-size: 38px;
+  font-weight: 950;
+  letter-spacing: 6px;
+  margin: 0;
+  background: linear-gradient(135deg, #fff 30%, #0596de 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.splash-loader-bar {
+  width: 240px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.loader-fill {
+  height: 100%;
+  background: #0596de;
+  border-radius: 2px;
+}
+
+/* --- SKELETON PULSE ANIMATION --- */
+@keyframes skeletonPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+  background: rgba(12, 25, 42, 0.03) !important;
+  border-color: rgba(12, 25, 42, 0.05) !important;
+}
+
+.skeleton-pulse * {
+  visibility: hidden;
+}
+
 .stock-kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

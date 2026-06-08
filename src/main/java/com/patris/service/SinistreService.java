@@ -73,7 +73,7 @@ public class SinistreService {
 
     public Sinistre valider(Long id, String statut, String validateur) {
         Sinistre s = findById(id);
-        s.setStatut(statut);
+        s.setStatut(com.patris.enums.statutSinistre.from(statut));
         s.setDateCloture(java.time.LocalDate.now());
         Sinistre saved = sinistreRepository.save(s);
 
@@ -81,7 +81,7 @@ public class SinistreService {
             if (s.getBien() != null && s.getBien().getId() != null) {
                 Bien b = s.getBien();
                 if ("PERTE_TOTALE".equals(s.getGravite()) && s.getMontantIndemnise() != null && s.getMontantIndemnise() > 0) {
-                    b.setStatutOperationnel("REFORME");
+                    b.setStatutOperationnel(com.patris.enums.statutOperationnel.REFORME);
                     bienRepository.save(b);
                 }
             }

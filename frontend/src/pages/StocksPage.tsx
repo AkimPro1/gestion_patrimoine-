@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity,
   AlertTriangle,
@@ -144,6 +145,24 @@ const StocksPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const SkeletonCard = () => (
+    <div className="stock-kpi-card skeleton-pulse">
+      <div style={{ height: '14px', width: '60%', background: '#eee', marginBottom: '12px', borderRadius: '4px' }} />
+      <div style={{ height: '32px', width: '40%', background: '#eee', marginBottom: '12px', borderRadius: '4px' }} />
+      <div style={{ height: '12px', width: '80%', background: '#eee', borderRadius: '4px' }} />
+    </div>
+  );
+
+  const SkeletonRow = () => (
+    <div className="stock-movement-row skeleton-pulse" style={{ opacity: 0.5 }}>
+      <div className="movement-mark" style={{ background: '#eee' }} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ height: '14px', width: '140px', background: '#eee', borderRadius: '4px' }} />
+        <div style={{ height: '10px', width: '100px', background: '#eee', borderRadius: '4px' }} />
+      </div>
+    </div>
+  );
 
   const stockByArticleId = useMemo(() => {
     const map = new Map<number, any>();
@@ -292,7 +311,7 @@ const StocksPage: React.FC = () => {
       showToast({ type: "warning", title: "Quantité invalide", message: "La quantité doit être supérieure à zéro." });
       return;
     }
-    if (mouvType === "SORTIE" && !mouvForm.beneficiaire && !mouvForm.beneficiaireLibre?.trim()) {
+    if (mouvType === "SORTIE" && !mouvForm.beneficiaire && !mouvForm.beneficiaireLibre?.trim() && !mouvForm.destination) {
       showToast({
         type: "warning",
         title: "Bénéficiaire obligatoire",
@@ -309,7 +328,8 @@ const StocksPage: React.FC = () => {
       fournisseur: mouvForm.fournisseur,
       pieceJustificative: mouvForm.pieceJustificative,
       observations: mouvForm.observations,
-      destination: mouvForm.destination,
+      // Si bénéficiaire libre est saisi, on l'ajoute à la destination pour le backend
+      destination: mouvForm.beneficiaireLibre ? `Bénéficiaire manuel: ${mouvForm.beneficiaireLibre}` : mouvForm.destination,
       beneficiaireLibre: mouvForm.beneficiaireLibre,
       typeOperation: mouvType,
       dateOperation: new Date().toISOString().slice(0, 19),

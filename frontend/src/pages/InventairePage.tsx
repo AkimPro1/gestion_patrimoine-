@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   getInventaires, createInventaire, deleteInventaire,
   getInventaireFiches, updateInventaireFiche,
@@ -178,7 +179,7 @@ const InventairePage: React.FC = () => {
     );
     if (found) {
       if (found.validationAgent !== 'VALIDE') {
-        setAuditModal({ ...found, coordonneeGps: found.coordonneeGps || found.coordonneesGps || '' });
+        setAuditModal({ ...found, coordonneeGps: found.coordonneeGps || '' });
         showToast({ type: 'info', title: 'IUP Détecté', message: `Ouverture de la fiche pour ${found.bien?.designation || found.codeIup}` });
       } else {
         showToast({ type: 'info', title: 'Déjà audité', message: 'Ce bien a déjà été scanné et validé par l\'agent.' });
@@ -242,7 +243,10 @@ const InventairePage: React.FC = () => {
       return;
     }
     navigator.geolocation.getCurrentPosition(
-      pos => setAuditModal((m: any) => ({ ...m, coordonneeGps: `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}` })),
+      pos => {
+        const coords = `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
+        setAuditModal((m: any) => ({ ...m, coordonneeGps: coords }));
+      },
       () => setAuditModal((m: any) => ({ ...m, coordonneeGps: '' }))
     );
   };
@@ -320,12 +324,33 @@ const InventairePage: React.FC = () => {
       </header>
 
       {/* ══════════ LOADING ══════════ */}
-      {loading && (
-        <div className="empty-state-modern">
-          <div className="inv-spinner"/>
-          <p>Initialisation du moteur d'audit...</p>
-        </div>
-      )}
+      <AnimatePresence>
+        {loading && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+            className="patris-splash-overlay"
+          >
+            <div className="splash-content">
+              <div className="splash-logo-glow">
+                <ShieldCheck size={80} color="#6366f1" />
+              </div>
+              <h2 className="splash-title">PATRIS</h2>
+              <div className="splash-loader-bar">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="loader-fill"
+                  style={{ background: "#6366f1" }}
+                />
+              </div>
+              <p style={{ opacity: 0.7, letterSpacing: '1px' }}>Synchronisation du périmètre d'inventaire...</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ══════════ STATS DASHBOARD ══════════ */}
       {!loading && (
