@@ -3,18 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Activity,
   AlertCircle,
   ArrowLeft,
   Building2,
-  CheckCircle2,
-  Database,
-  KeyRound,
+  Globe,
   Lock,
   LogIn,
   ShieldCheck,
-  Smartphone,
   User,
+  ChevronDown,
+  Landmark,
+  BarChart3,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import axios from 'axios';
 import './LoginPage.css';
@@ -25,6 +26,7 @@ const LoginPage: React.FC = () => {
   const [step, setStep] = useState<Step>('credentials');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [totpCode, setTotpCode] = useState(['', '', '', '', '', '']);
   const [tempToken, setTempToken] = useState('');
   const [error, setError] = useState('');
@@ -96,289 +98,233 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <main className="login-alt">
-      <section className="login-hero" aria-label="Présentation PATRIS">
-        <motion.div
-          className="brand"
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: 'easeOut' }}
-        >
-          <div className="brand-mark">
-            <span />
+    <div className="login-alt">
+      {/* Sidebar Section - Left Side Marketing */}
+      <aside className="login-hero">
+        <div className="brand">
+          <div className="brand-logo-circle">
+            <Building2 size={28} />
           </div>
-          <div>
-            <h1 className="brand-name">PATRIS</h1>
-            <p>Patrimoine public intelligent</p>
+          <div className="brand-text-container">
+            <h1 className="brand-name-main">PATRIMOINE <span>360</span></h1>
+            <p className="brand-subtitle">Gestion du Patrimoine</p>
           </div>
-        </motion.div>
-
-        <motion.div
-          className="hero-panel"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
-        >
-          <span className="login-tag">Système intégré de gestion</span>
-          <h2>
-            Pilotez vos actifs avec une précision d'état-major.
+        </div>
+        
+        <div className="hero-panel">
+          <h2 className="hero-headline">
+            Gérez. Suivez. Valorisez.<br />
+            <span>Votre patrimoine, en toute simplicité.</span>
           </h2>
-          <p>
-            Une plateforme moderne pour fiabiliser l'inventaire, sécuriser les mouvements
-            et donner aux décideurs une vision claire du patrimoine institutionnel.
+          <div className="hero-divider" />
+          <p className="hero-description">
+            Une solution complète pour une gestion efficace, transparente et sécurisée de vos biens.
           </p>
 
-          <div className="login-metrics" aria-label="Indicateurs clés">
-            <div>
-              <strong>12k+</strong>
-              <span>Biens consolidés</span>
+          <div className="feature-list">
+            <div className="feature-item">
+              <div className="feature-icon-box">
+                <Landmark size={22} />
+              </div>
+              <div className="feature-text">
+                <h3 className="feature-title">Gestion centralisée</h3>
+                <p className="feature-desc">Regroupez toutes vos informations patrimoniales en un seul endroit.</p>
+              </div>
             </div>
-            <div>
-              <strong>99.9%</strong>
-              <span>Traçabilité</span>
+
+            <div className="feature-item">
+              <div className="feature-icon-box">
+                <BarChart3 size={22} />
+              </div>
+              <div className="feature-text">
+                <h3 className="feature-title">Suivi en temps réel</h3>
+                <p className="feature-desc">Suivez l'état, la localisation et la valeur de vos biens à tout moment.</p>
+              </div>
             </div>
-            <div>
-              <strong>2FA</strong>
-              <span>Sécurité active</span>
+
+            <div className="feature-item">
+              <div className="feature-icon-box">
+                <ShieldCheck size={22} />
+              </div>
+              <div className="feature-text">
+                <h3 className="feature-title">Sécurité renforcée</h3>
+                <p className="feature-desc">Vos données sont protégées avec les plus hauts standards de sécurité.</p>
+              </div>
             </div>
           </div>
-        </motion.div>
-
-        <motion.div
-          className="insight-grid"
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.3 }}
-        >
-          <article className="insight-card is-primary">
-            <div className="insight-icon">
-              <ShieldCheck size={20} />
-            </div>
-            <div>
-              <h3>Sécurité bancaire</h3>
-              <p>Accès renforcé, journalisation et authentification multifacteur.</p>
-            </div>
-          </article>
-          <article className="insight-card">
-            <div className="insight-icon">
-              <Database size={20} />
-            </div>
-            <div>
-              <h3>Nomenclature unifiée</h3>
-              <p>Référentiel métier harmonisé pour l'ensemble des actifs.</p>
-            </div>
-          </article>
-          <article className="insight-card">
-            <div className="insight-icon">
-              <Activity size={20} />
-            </div>
-            <div>
-              <h3>Pilotage temps réel</h3>
-              <p>Suivi opérationnel des biens, stocks et affectations critiques.</p>
-            </div>
-          </article>
-        </motion.div>
-      </section>
-
-      <section className="login-shell" aria-label="Authentification">
-        <div className="login-card-frame">
-          <div className="status-ribbon">
-            <Building2 size={16} />
-            <span>Console sécurisée</span>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {step === 'credentials' ? (
-              <motion.form
-                key="credentials"
-                className="login-glass"
-                onSubmit={handleLogin}
-                initial={{ opacity: 0, x: 28 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -28 }}
-                transition={{ duration: 0.35 }}
-              >
-                <div className="login-title">
-                  <span>Accès utilisateur</span>
-                  <h2>Connexion</h2>
-                  <p>Ravi de vous revoir. Entrez vos accès pour continuer.</p>
-                </div>
-
-                <AnimatePresence>
-                  {error && (
-                    <motion.div
-                      className="error"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                    >
-                      <AlertCircle size={18} />
-                      {error}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="field">
-                  <label>Identifiant</label>
-                  <div className="input-wrap">
-                    <User size={18} />
-                    <input
-                      type="text"
-                      required
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Email ou matricule"
-                    />
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label>Mot de passe</label>
-                  <div className="input-wrap">
-                    <Lock size={18} />
-                    <input
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                    />
-                  </div>
-                </div>
-
-                <motion.button
-                  className="primary"
-                  type="submit"
-                  disabled={loading}
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  {loading ? (
-                    <span className="loader-dots">Connexion...</span>
-                  ) : (
-                    <>
-                      <span>Se connecter</span>
-                      <LogIn size={18} />
-                    </>
-                  )}
-                </motion.button>
-
-                <div className="login-footer">
-                  <label className="toggle">
-                    <input type="checkbox" />
-                    <span>Rester connecté</span>
-                  </label>
-                  <a href="#">Mot de passe oublié ?</a>
-                </div>
-
-                <div className="version-strip">
-                  <div className="version-icon">
-                    <CheckCircle2 size={19} />
-                  </div>
-                  <div>
-                    <p>Version 3.0.0-Sprint3</p>
-                    <span>Sécurité 2FA · Mai 2026</span>
-                  </div>
-                </div>
-              </motion.form>
-            ) : (
-              <motion.div
-                key="twofa"
-                className="login-glass twofa-card"
-                initial={{ opacity: 0, x: 28 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -28 }}
-                transition={{ duration: 0.35 }}
-              >
-                <div className="twofa-header">
-                  <motion.div
-                    className="twofa-icon"
-                    initial={{ scale: 0.7, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-                  >
-                    <Smartphone size={30} />
-                  </motion.div>
-                  <span>Double validation</span>
-                  <h2>Vérification 2FA</h2>
-                  <p>
-                    Entrez le code à 6 chiffres généré par votre application d'authentification.
-                  </p>
-                </div>
-
-                <div className="auth-badge">
-                  <KeyRound size={18} />
-                  <span>Google Authenticator · Microsoft Authenticator</span>
-                </div>
-
-                <AnimatePresence>
-                  {error && (
-                    <motion.div
-                      className="error"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                    >
-                      <AlertCircle size={18} />
-                      {error}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="otp-grid">
-                  {totpCode.map((digit, index) => (
-                    <motion.input
-                      key={index}
-                      ref={(el) => { inputRefs.current[index] = el; }}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handleCodeChange(index, e.target.value)}
-                      onKeyDown={(e) => handleCodeKeyDown(index, e)}
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.04 + 0.15 }}
-                      className={digit ? 'filled' : ''}
-                      autoFocus={index === 0}
-                    />
-                  ))}
-                </div>
-
-                <motion.button
-                  className="primary"
-                  onClick={() => handleVerify2FA()}
-                  disabled={loading || totpCode.some(digit => !digit)}
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  {loading ? (
-                    <span className="loader-dots">Vérification...</span>
-                  ) : (
-                    <>
-                      <ShieldCheck size={18} />
-                      <span>Vérifier le code</span>
-                    </>
-                  )}
-                </motion.button>
-
-                <button
-                  className="ghost-action"
-                  onClick={() => {
-                    setStep('credentials');
-                    setError('');
-                    setTotpCode(['', '', '', '', '', '']);
-                  }}
-                >
-                  <ArrowLeft size={16} />
-                  Retour à la connexion
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
-      </section>
-    </main>
+
+        <div className="hero-footer-copyright">
+          © 2024 Patrimoine 360. Tous droits réservés.
+        </div>
+      </aside>
+
+      {/* Main Form Section - Right Side Form */}
+      <main className="login-shell">
+        {/* Language selector in top-right */}
+        <div className="language-selector">
+          <Globe size={16} />
+          <span>Français</span>
+          <ChevronDown size={14} />
+        </div>
+
+        <div className="login-card-frame">
+          <div className="login-glass">
+            <AnimatePresence mode="wait">
+              {step === 'credentials' ? (
+                <motion.form 
+                  key="credentials"
+                  onSubmit={handleLogin}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <div className="login-header-centered">
+                    <div className="lock-icon-circle">
+                      <Lock size={28} />
+                    </div>
+                    <h2>Bienvenue !</h2>
+                    <p>Connectez-vous à votre espace de gestion du patrimoine</p>
+                  </div>
+
+                  {error && (
+                    <div className="error">
+                      <AlertCircle size={18} />
+                      <span>{error}</span>
+                    </div>
+                  )}
+
+                  <div className="field">
+                    <label htmlFor="username">Nom d'utilisateur</label>
+                    <div className="input-wrap">
+                      <User className="input-icon-left" size={20} />
+                      <input 
+                        id="username"
+                        type="text" 
+                        placeholder="Entrez votre nom d'utilisateur"
+                        required
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        autoComplete="username"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="password">Mot de passe</label>
+                    <div className="input-wrap">
+                      <Lock className="input-icon-left" size={20} />
+                      <input 
+                        id="password"
+                        type={showPassword ? 'text' : 'password'} 
+                        placeholder="Entrez votre mot de passe"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="current-password"
+                      />
+                      <button 
+                        type="button" 
+                        className="password-toggle"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="forgot-password-wrap">
+                    <a href="#" className="forgot-password-link">Mot de passe oublié ?</a>
+                  </div>
+
+                  <div className="remember-me-wrap">
+                    <input type="checkbox" id="remember-me" defaultChecked />
+                    <label htmlFor="remember-me">
+                      <span>Se souvenir de moi</span>
+                    </label>
+                  </div>
+
+                  <button className="btn-connect" type="submit" disabled={loading}>
+                    {loading ? (
+                      <span className="loader-dots">Connexion en cours...</span>
+                    ) : (
+                      <>
+                        <LogIn size={20} />
+                        <span>Se connecter</span>
+                      </>
+                    )}
+                  </button>
+
+                  <div className="divider-or">ou</div>
+
+                  <button type="button" className="btn-sso-mock">
+                    <ShieldCheck size={20} color="#2563eb" />
+                    <span>Connexion SSO</span>
+                  </button>
+                </motion.form>
+              ) : (
+                <motion.div 
+                  key="twofa"
+                  className="twofa-card"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="login-header-centered">
+                    <div className="lock-icon-circle">
+                      <ShieldCheck size={32} />
+                    </div>
+                    <h2>Vérification 2FA</h2>
+                    <p>Entrez le code de sécurité généré par votre application d'authentification</p>
+                  </div>
+
+                  {error && (
+                    <div className="error">
+                      <AlertCircle size={18} />
+                      <span>{error}</span>
+                    </div>
+                  )}
+
+                  <div className="otp-grid">
+                    {totpCode.map((digit, index) => (
+                      <input
+                        key={index}
+                        ref={(el) => { inputRefs.current[index] = el; }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleCodeChange(index, e.target.value)}
+                        onKeyDown={(e) => handleCodeKeyDown(index, e)}
+                        className={digit ? 'filled' : ''}
+                        autoFocus={index === 0}
+                        aria-label={`Digit ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <button 
+                    className="btn-connect" 
+                    onClick={() => handleVerify2FA()}
+                    disabled={loading || totpCode.some(d => !d)}
+                  >
+                    {loading ? 'Vérification...' : 'Vérifier le code'}
+                  </button>
+
+                  <button className="btn-sso-mock" onClick={() => setStep('credentials')} style={{ marginTop: '16px' }}>
+                    <ArrowLeft size={16} />
+                    <span>Retour à la connexion</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 
