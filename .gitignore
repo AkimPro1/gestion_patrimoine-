@@ -19,3 +19,5 @@ frontend/dist/
 jdk-21/
 scratch/
 maven/
+
+target/
