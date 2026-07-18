@@ -24,7 +24,7 @@ public interface BienRepository extends JpaRepository<Bien, Long> {
     @Query("SELECT MAX(b.iup) FROM Bien b WHERE b.iup LIKE :prefix%")
     String findMaxIupByPrefix(@Param("prefix") String prefix);
 
-    @Query(value = "SELECT nextval('iup_sequence')", nativeQuery = true)
+    @Query("SELECT COALESCE(MAX(b.id), 0) + 1 FROM Bien b")
     Long getNextIupSequenceValue();
 
     @Query("SELECT b FROM Bien b WHERE b.archived = false AND b.id NOT IN (SELECT e.bien.id FROM Entretien e WHERE e.datePrevue >= :limite OR e.dateRealisee >= :limite)")

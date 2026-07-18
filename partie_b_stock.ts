@@ -485,21 +485,7 @@ export const PARTIE_B_STOCK: StockGroupe[] = [
     ],
   },
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // 607 — ACHAT DE MARCHANDISES
-  // ─────────────────────────────────────────────────────────────────────────
-  {
-    compte: "607",
-    libelle: "ACHAT DE MARCHANDISES",
-    categorie: "Marchandises",
-    famille: "Achats de marchandises",
-    type_bien: "consommable",
-    unite_defaut: "pièce",
-    items: [
-      { code: "607.001", intitule: "Achat de marchandises" },
-      { code: "607.999", intitule: "Autres achats de marchandises" },
-    ],
-  },
+
 
   // ─────────────────────────────────────────────────────────────────────────
   // 609 — AUTRES ACHATS DE BIENS
@@ -508,10 +494,17 @@ export const PARTIE_B_STOCK: StockGroupe[] = [
     compte: "609",
     libelle: "AUTRES ACHATS DE BIENS",
     categorie: "Autres achats",
-    famille: "Achats divers",
+    famille: "Biens divers non classés",
     type_bien: "consommable",
     unite_defaut: "pièce",
-    items: [{ code: "609.999", intitule: "Autres achats de biens" }],
+    items: [
+      { code: "609.001", intitule: "Biens divers non classés dans les autres comptes d'achats" },
+      { code: "609.002", intitule: "Achats exceptionnels de biens" },
+      { code: "609.003", intitule: "Achats ponctuels de matériels divers" },
+      { code: "609.004", intitule: "Achats accessoires de biens" },
+      { code: "609.005", intitule: "Autres biens consommables divers" },
+      { code: "609.999", intitule: "Autres achats de biens" },
+    ],
   },
 
   // ─────────────────────────────────────────────────────────────────────────
